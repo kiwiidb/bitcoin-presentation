@@ -75,7 +75,7 @@
 
 %\setbeamertemplate{navigation symbols}{} % To remove the navigation symbols from the bottom of all slides uncomment this line
 }
-
+\usepackage{listings}
 \usepackage{graphicx} % Allows including images
 \usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
 
@@ -110,25 +110,60 @@
 
 \begin{frame}
 \frametitle{General format of a Bitcoin transaction}
-
+\begin{itemize}
+\item Number of inputs
+\item List of outputs
+\item Number of outputs
+\item List of outputs
+\item LockTime
+\end{itemize3}
+\end{frame}
+\begin{frame}
+\frametitle{General format of a Bitcoin transaction}
+\includegraphics[scale=0.2]{images/transactions.png}
 \end{frame}
 
 %------------------------------------------------
-\begin{frame}
+\begin{frame}[fragile]
+\textbf{Inputs} are references to \textbf{outputs} of previous transactions.
+
+\textit{scriptSig} is the first part of the script
 \frametitle{Inputs}
+\begin{verbatim}Input:
+Previous tx: f5d8ee39a430901c91a5917b9f2
+dc19d6d1a0e9cea205b009ca73dd04470b9a6
+Index: 0
+scriptSig: 304502206e21798a42fae0e854281a
+bd38bacd1aeed3ee3738d9e1446618c4571d10
+
+90db022100e2ac980643b0b82c0
+e88ffdfec6b64e3e6ba35e7ba5fdd7d5d6cc8d25c6b241501
+\end{verbatim}
 \end{frame}
 
-\begin{frame}
+\begin{frame}[fragile]
 \frametitle{Outputs}
+The total value of outputs must be less than the total value of the referenced outputs in the input part. 
+
+\textit{scriptPubKey} is the second part of the script.
+\begin{verbatim}
+Output:
+Value: 5000000000
+scriptPubKey: OP_DUP OP_HASH160
+ 404371705fa9bd789a2fcd52
+d2c580b65d35549d
+OP EQUALVERIFY OP CHECKSIG
+\end{verbatim}
 \end{frame}
 
 \begin{frame}
 \frametitle{Verification}
+Bitcoin uses a \textit{Forth}-like scripting language to check if a transaction is authorised. The parts in \textit{scriptSig} and \textit{scriptPubkey} are concatenated, pushed on a stack one by one and if the result is \textit{true}, the transaction is valid.
 \end{frame}
 
 \begin{frame}
 \frametitle{What does it mean to own Bitcoin?}
-
+\includegraphics[scale=0.8]{images/chain.png}
 
 \end{frame}
 
@@ -136,30 +171,50 @@
 
 \begin{frame}
 \frametitle{Pay to public key hash}
-
+\begin{center}
+\resizebox{350pt}{40pt}{
+  \begin{tabular}{| l | c | r |}
+    \hline
+Stack&Script&Description \\ \hline
+sig pubKey &OP DUP OP HASH160 pubKeyHash OPEQUALVERIFY OP CHECKSIG &	Constants are added to the stack. \\ \hline
+sig pubKey pubKey &OP HASH160 pubKeyHash OP EQUALVERIFY OP CHECKSIG &	Top stack item is duplicated. \\ \hline
+sig pubKey pubHashA &pubKeyHash OP EQUALVERIFY 
+OP CHECKSIG&Top stack item is hashed. \\ \hline
+sig pubKey pubHashA pubKeyHash&OP EQUALVERIFY OP CHECKSIG &	Constant added. \\ \hline
+sig pubKey &OP CHECKSIG &Equality is checked between the top two stack items. \\ \hline
+true&Empty.&Signature is checked for top two stack items. \\ \hline
+  \end{tabular}
+  }
+\end{center}
 \end{frame}
 
-\begin{frame}
+\begin{frame}[fragile]
 \frametitle{Pay to script hash}
-
+Created to move the responsability for supplying the conditions to 
+redeem a transaction from the sender to the receiver. Makes funding a scripted transaction identical to funding a regular one.
+\begin{verbatim}
+scriptPubKey: OP_HASH160 <scriptHash> OP_EQUAL 
+scriptSig: ..signatures... <serialized script>
+\end{verbatim}
 \end{frame}
 \section{The double spending problem}
 \begin{frame}
 \frametitle{Mining (short)}
-
+Transactions need to be included in a block by a miner to be considered valid, to protect against double spendings. The more blocks are added  on top of the block with the transaction, the more unlikely it is to be reversed. After 6 confirmations (1 hour), the transaction can safely be regarded as final.
 \end{frame}
 \section{Problems with scalability}
 \begin{frame}
 \frametitle{Transaction fees}
-
-\end{frame}
-\begin{frame}
-\frametitle{Confirmation delay}
-
+\includegraphics[scale=0.25]{images/fees.png}
 \end{frame}
 \begin{frame}
 \frametitle{Blockspace and decentralization}
-
+\textbf{All} of the properties Bitcoin has, it has because of it's decentralization. It is absolutely vital that the cost of running a node which validates all rules independently is kept as low as possible.
+\begin{itemize}
+\item Size of the Blockchain is already around 200 GB
+\item Upload is around 200 GB/month, unmetered connection necessary.
+\item Need to keep up with a new block every 10 minutes.
+\end{itemize}
 \end{frame}
 \section{The Lightning Network}
 \begin{frame}
