@@ -116,7 +116,7 @@
 \item Number of outputs
 \item List of outputs
 \item LockTime
-\end{itemize3}
+\end{itemize}
 \end{frame}
 \begin{frame}
 \frametitle{General format of a Bitcoin transaction}
@@ -197,6 +197,14 @@ scriptPubKey: OP_HASH160 <scriptHash> OP_EQUAL
 scriptSig: ..signatures... <serialized script>
 \end{verbatim}
 \end{frame}
+\begin{frame}[fragile]
+\frametitle{Multisignature transactions}
+\begin{verbatim}
+m-of-n multi-signature transaction:
+scriptSig: 0 <sig1> ... <script>
+script: OP_m <pubKey1> ... OP_n OP_CHECKMULTISIG
+\end{verbatim}
+\end{frame}
 \section{The double spending problem}
 \begin{frame}
 \frametitle{Mining (short)}
@@ -218,63 +226,111 @@ Transactions need to be included in a block by a miner to be considered valid, t
 \end{frame}
 \section{The Lightning Network}
 \begin{frame}
-\frametitle{Lightning on a conceptual level}
+\frametitle{Lightning Network}
+The Lightning Network is a \textit{second-layer} payment protocol built on the Bitcoin blockchain. Using the blockchain for small value payments is completely overkill. Lightning uses the blockchain as a completely neutral and fair 'judge', and moves almost all transactions off the chain, only settling on-chain in the case of disputes. 
+\end{frame}
+\begin{frame}
+\frametitle{Payment channels(naive)}
+\includegraphics[scale=0.3]{images/channel.png}
 
 \end{frame}
 \begin{frame}
-\frametitle{Payment channels}
+\frametitle{Payment channels(better)}
+Constructed like this, revealing the secret effectively means revoking your claim on the old states. Channel updates can thus happen trustlessly.
+\includegraphics[scale=0.4]{images/asymmetry.png}
 
 \end{frame}
 \begin{frame}
-\frametitle{Payment channel network (naive)}
+\frametitle{Payment channel network}
+Alice wants to pay Dave. In order for Dave to accept this payment, he must generate a random number R. He keeps R secret, but hashes it and gives the hash H to Alice.
+\includegraphics[scale=0.12]{images/network1.png}
 
 \end{frame}
 \begin{frame}
-\frametitle{Payment channel network (better)}
+\frametitle{Payment channel network}
+Alice tells Bob: “I will pay you if you can produce the preimage of H within 3 days.” In particular, she signs a transaction and shares it with Bob where for the first three days after it is broadcast, only Bob can redeem it with knowledge of R, and afterwards it is redeemable only by Alice.
+\includegraphics[scale=0.12]{images/network2.png}
 
+\end{frame}
+\begin{frame}
+\frametitle{Payment channel network}
+Bob, knowing that he can pull funds from Alice if he knows R, now has no issue telling Carol: “I will pay you if you can produce the preimage of H within 2 days.”
+\includegraphics[scale=0.12]{images/network3.png}
+
+\end{frame}
+\begin{frame}
+\frametitle{Payment channel network}
+Now, everyone can clear out, because they are guaranteed their money if they broadcast. They would prefer not to do that though, and instead settle each of these hops off chain. Alice knows that Bob can pull funds from her since he has R, so she tells Bob: “I’ll pay you, regardless of R, and in doing so we’ll terminate the HTLC so we can forget about R.” 
+\includegraphics[scale=0.12]{images/network4.png}
+
+\end{frame}
+\begin{frame}
+\frametitle{Payment channel network}
+Now, what if Dave is uncooperative and refuses to give R to Bob and Carol? Note that Dave must broadcast the transaction from Carol within 1 day, and in doing so must reveal R in order to redeem the funds. Bob and Carol can simply look at the blockchain to determine what R is and settle off-chain as well.
 \end{frame}
 %------------------------------------------------
 
 \begin{frame}
 \frametitle{Lightning problems and solutions}
-
+\begin{itemize}
+\item On-boarding new users still requires on-chain transaction(s)
+\item Channel depletion
+\item Nodes need to be online permanently or frequently
+\end{itemize}
+\begin{itemize}
+\item Channel factories
+\item Submarine swaps
+\item Watchtowers
+\end{itemize}
 \end{frame}
 \section{The real mindblowing stuff}
 \begin{frame}
 \frametitle{Cross chain atomic swaps}
-
+\includegraphics[scale=0.2]{images/lightning_swap.png}
 \end{frame}
 \begin{frame}
 \frametitle{Submarine swaps}
-
+It is possible to trustlessly trade on-chain-coins for off-chain coins, using a process known as submarine swaps. This can be used to replenish channels, "cash-out" large channel balances, and generally to manage channel values. This sort of swap can also be done between blockchains, one of which does not even need a second layer.
 \end{frame}
 
-\begin{frame}
-\frametitle{Oracles}
-
-\end{frame}
 \begin{frame}
 \frametitle{Channel Factories}
-
+Just as payment channels allow for trustless off-chain updates between two participants, Channel Factories would allow for trustless off-chain creation of channels between a (large) group of participants. This would allow a group of people/organizations to come together and would extremely cut the potential costs of opening channels, especially if Schnorr signatures would be used.
 \end{frame}
 %------------------------------------------------
-
+\begin{frame}
+\frametitle{Implementations}
+\begin{itemize}
+\item LND, Lightning Labs (Golang)
+\item C-Lightning, Blockstream (C)
+\item Eclair, ACINQ (Scala)
+\end{itemize}
+LND by far the most mature implementation by now. 
+Mobile option: Bitcoin-Lightning-Wallet.
+\end{frame}
+\begin{frame}
+\frametitle{Applications}
+\begin{itemize}
+\item Micropayments: API pay-per-call
+\item satoshis.place
+\item yalls.org
+\item lightningspin.com
+\item Various merchants accept lightning payments today:
+lightningnetworkstores.com
+\end{itemize}
+\end{frame}
 \begin{frame}
 \frametitle{References}
-\footnotesize{
-\begin{thebibliography}{99} % Beamer does not support BibTeX so references must be inserted manually as below
-\bibitem[Smith, 2012]{p1} John Smith (2012)
-\newblock Title of the publication
-\newblock \emph{Journal Name} 12(3), 45 -- 678.
-\end{thebibliography}
-}
+
+\begin{itemize}
+\item dev.lightning.community 
+\item en.bitcoin.it/wiki/Transaction
+\item bitcoin.org/bitcoin.pdf
+\end{itemize} % Beamer does not support BibTeX so references must be inserted manually as below
+
+
 \end{frame}
 
-%------------------------------------------------
-
-\begin{frame}
-\Huge{\centerline{The End}}
-\end{frame}
 
 %----------------------------------------------------------------------------------------
 
