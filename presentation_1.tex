@@ -176,7 +176,7 @@ Bitcoin uses a \textit{Forth}-like scripting language to check if a transaction 
   \begin{tabular}{| l | c | r |}
     \hline
 Stack&Script&Description \\ \hline
-sig pubKey &OP DUP OP HASH160 pubKeyHash OPEQUALVERIFY OP CHECKSIG &	Constants are added to the stack. \\ \hline
+sig pubKey &OP DUP OP HASH160 pubKeyHash OP EQUALVERIFY OP CHECKSIG &	Constants are added to the stack. \\ \hline
 sig pubKey pubKey &OP HASH160 pubKeyHash OP EQUALVERIFY OP CHECKSIG &	Top stack item is duplicated. \\ \hline
 sig pubKey pubHashA &pubKeyHash OP EQUALVERIFY 
 OP CHECKSIG&Top stack item is hashed. \\ \hline
