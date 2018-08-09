@@ -127,7 +127,7 @@
 \begin{frame}[fragile]
 \textbf{Inputs} are references to \textbf{outputs} of previous transactions.
 
-\textit{scriptSig} is the first part of the script
+\textit{scriptSig} is the first part of the script which makes sure the spending is authorised.
 \frametitle{Inputs}
 \begin{verbatim}Input:
 Previous tx: f5d8ee39a430901c91a5917b9f2
@@ -213,7 +213,8 @@ Transactions need to be included in a block by a miner to be considered valid, t
 \section{Problems with scalability}
 \begin{frame}
 \frametitle{Transaction fees}
-\includegraphics[scale=0.25]{images/fees.png}
+\includegraphics[scale=0.25]{images/fees.png}\\
+\url{jochen-hoenicke.de/queue}
 \end{frame}
 \begin{frame}
 \frametitle{Blockspace and decentralization}
@@ -230,7 +231,7 @@ Transactions need to be included in a block by a miner to be considered valid, t
 The Lightning Network is a \textit{second-layer} payment protocol built on the Bitcoin blockchain. Using the blockchain for small value payments is completely overkill. Lightning uses the blockchain as a completely neutral and fair 'judge', and moves almost all transactions off the chain, only settling on-chain in the case of disputes. 
 \end{frame}
 \begin{frame}
-\frametitle{Payment channels(naive)}
+\frametitle{Payment channels (naive)}
 \includegraphics[scale=0.3]{images/channel.png}
 
 \end{frame}
@@ -278,8 +279,8 @@ Now, what if Dave is uncooperative and refuses to give R to Bob and Carol? Note 
 \item Nodes need to be online permanently or frequently
 \end{itemize}
 \begin{itemize}
-\item Channel factories
-\item Submarine swaps
+\item 3rd party funding of channels, channel factories
+\item Submarine swaps, atomic multipath payments
 \item Watchtowers
 \end{itemize}
 \end{frame}
@@ -301,31 +302,41 @@ Just as payment channels allow for trustless off-chain updates between two parti
 \begin{frame}
 \frametitle{Implementations}
 \begin{itemize}
-\item LND, Lightning Labs (Golang)
-\item C-Lightning, Blockstream (C)
-\item Eclair, ACINQ (Scala)
+\item LND, Lightning Labs (Golang): \url{github.com/lightningnetwork/lnd}
+\item C-Lightning, Blockstream (C): \url{github.com/ElementsProject/lightning}
+\item Eclair, ACINQ (Scala): \url{github.com/acinq/eclair}
 \end{itemize}
 LND by far the most mature implementation by now. 
-Mobile option: Bitcoin-Lightning-Wallet.
+Mobile option (Android): Bitcoin-Lightning-Wallet.
+\end{frame}
+\begin{frame}
+\frametitle{Growth of the network}
+Network topology in January 2018
+\includegraphics[scale=0.2]{images/earlylightning1.jpg}
+\end{frame}
+\begin{frame}
+\frametitle{Growth of the network}
+Network topology in as of this moment:
+\url{https://rompert.com/recksplorer}
 \end{frame}
 \begin{frame}
 \frametitle{Applications}
 \begin{itemize}
 \item Micropayments: API pay-per-call
-\item satoshis.place
-\item yalls.org
-\item lightningspin.com
+\item \url{satoshis.place}
+\item \url{yalls.org}
+\item \url{lightningspin.com}
 \item Various merchants accept lightning payments today:
-lightningnetworkstores.com
+\url{lightningnetworkstores.com}
 \end{itemize}
 \end{frame}
 \begin{frame}
 \frametitle{References}
 
 \begin{itemize}
-\item dev.lightning.community 
-\item en.bitcoin.it/wiki/Transaction
-\item bitcoin.org/bitcoin.pdf
+\item \url{dev.lightning.community}
+\item \url{en.bitcoin.it/wiki/Transaction}
+\item \url{bitcoin.org/bitcoin.pdf}
 \end{itemize} % Beamer does not support BibTeX so references must be inserted manually as below
 
 
